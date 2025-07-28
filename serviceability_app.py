@@ -1,6 +1,5 @@
 import streamlit as st
 import pandas as pd
-from streamlit_extras.card import card
 
 # Load the data
 data = {
@@ -53,6 +52,7 @@ st.markdown("""
         box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         padding: 15px;
         margin-bottom: 15px;
+        background-color: #f9f9f9;
     }
     .yes-service {
         background-color: #e8f5e9;
@@ -77,6 +77,16 @@ st.markdown("""
         padding: 15px;
         border-radius: 10px;
         margin-bottom: 20px;
+    }
+    .card-title {
+        font-size: 18px;
+        color: #7f8c8d;
+        margin-bottom: 5px;
+    }
+    .card-value {
+        font-size: 24px;
+        font-weight: bold;
+        color: #2c3e50;
     }
 </style>
 """, unsafe_allow_html=True)
@@ -103,52 +113,20 @@ st.markdown('<div class="subheader">Basic Information</div>', unsafe_allow_html=
 col1, col2 = st.columns(2)
 
 with col1:
-    card(
-        title="Cluster",
-        content=result["Cluster"][0],
-        styles={
-            "card": {
-                "width": "100%",
-                "height": "120px",
-                "border-radius": "10px",
-                "box-shadow": "0 4px 6px rgba(0, 0, 0, 0.1)",
-                "padding": "20px"
-            },
-            "title": {
-                "font-size": "18px",
-                "color": "#7f8c8d"
-            },
-            "content": {
-                "font-size": "24px",
-                "font-weight": "bold",
-                "color": "#2c3e50"
-            }
-        }
-    )
+    st.markdown("""
+    <div class="metric-card">
+        <div class="card-title">Cluster</div>
+        <div class="card-value">{}</div>
+    </div>
+    """.format(result["Cluster"][0]), unsafe_allow_html=True)
 
 with col2:
-    card(
-        title="CG Head",
-        content=result["CG head"][0],
-        styles={
-            "card": {
-                "width": "100%",
-                "height": "120px",
-                "border-radius": "10px",
-                "box-shadow": "0 4px 6px rgba(0, 0, 0, 0.1)",
-                "padding": "20px"
-            },
-            "title": {
-                "font-size": "18px",
-                "color": "#7f8c8d"
-            },
-            "content": {
-                "font-size": "24px",
-                "font-weight": "bold",
-                "color": "#2c3e50"
-            }
-        }
-    )
+    st.markdown("""
+    <div class="metric-card">
+        <div class="card-title">CG Head</div>
+        <div class="card-value">{}</div>
+    </div>
+    """.format(result["CG head"][0]), unsafe_allow_html=True)
 
 # Serviceability Section
 st.markdown('<div class="subheader">Serviceability Details</div>', unsafe_allow_html=True)
