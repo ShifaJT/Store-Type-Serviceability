@@ -25,82 +25,133 @@ df = pd.DataFrame(data)
 
 # Set page config
 st.set_page_config(
-    page_title="Serviceability Dashboard",
-    page_icon="🛒",
-    layout="wide"
+    page_title="Retail Serviceability Dashboard",
+    page_icon="📊",
+    layout="wide",
+    initial_sidebar_state="expanded"
 )
 
 # Custom CSS
 st.markdown("""
 <style>
+    /* Main container */
+    .main {
+        background-color: #f8f9fa;
+    }
+    
+    /* Header */
     .header {
-        font-size: 36px !important;
-        font-weight: bold;
+        font-size: 2.5rem;
+        font-weight: 700;
         color: #2c3e50;
-        text-align: center;
-        padding: 20px;
+        padding: 1rem 0;
+        margin-bottom: 1.5rem;
+        border-bottom: 1px solid #e0e0e0;
     }
-    .subheader {
-        font-size: 24px !important;
-        color: #3498db;
-        border-bottom: 2px solid #3498db;
-        padding-bottom: 10px;
-        margin-top: 20px;
-    }
-    .metric-card {
+    
+    /* City selector */
+    .city-selector {
+        background-color: white;
         border-radius: 10px;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        padding: 15px;
-        margin-bottom: 15px;
-        background-color: #f9f9f9;
+        padding: 1.5rem;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        margin-bottom: 2rem;
     }
-    .yes-service {
-        background-color: #e8f5e9;
-        padding: 8px;
-        border-radius: 5px;
-        color: #2e7d32;
-        font-weight: bold;
-    }
-    .no-service {
-        background-color: #ffebee;
-        padding: 8px;
-        border-radius: 5px;
-        color: #c62828;
-        font-weight: bold;
-    }
-    .service-item {
-        padding: 8px 0;
-        border-bottom: 1px solid #eee;
-    }
-    .select-box {
-        background-color: #f5f5f5;
-        padding: 15px;
+    
+    /* Info cards */
+    .info-card {
+        background-color: white;
         border-radius: 10px;
-        margin-bottom: 20px;
+        padding: 1.5rem;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        margin-bottom: 1rem;
+        height: 100%;
     }
+    
     .card-title {
-        font-size: 18px;
+        font-size: 1rem;
         color: #7f8c8d;
-        margin-bottom: 5px;
+        margin-bottom: 0.5rem;
     }
+    
     .card-value {
-        font-size: 24px;
-        font-weight: bold;
+        font-size: 1.5rem;
+        font-weight: 600;
         color: #2c3e50;
+    }
+    
+    /* Serviceability items */
+    .service-container {
+        background-color: white;
+        border-radius: 10px;
+        padding: 1.5rem;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        margin-bottom: 1rem;
+    }
+    
+    .service-item {
+        padding: 0.75rem 0;
+        border-bottom: 1px solid #f0f0f0;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    
+    .service-item:last-child {
+        border-bottom: none;
+    }
+    
+    .service-name {
+        font-weight: 500;
+        color: #34495e;
+    }
+    
+    .service-status {
+        font-weight: 600;
+        padding: 0.25rem 0.75rem;
+        border-radius: 20px;
+        font-size: 0.85rem;
+    }
+    
+    .available {
+        background-color: #e3f2fd;
+        color: #1976d2;
+    }
+    
+    .not-available {
+        background-color: #ffebee;
+        color: #d32f2f;
+    }
+    
+    /* Footer */
+    .footer {
+        text-align: center;
+        color: #95a5a6;
+        font-size: 0.85rem;
+        margin-top: 2rem;
+        padding-top: 1rem;
+        border-top: 1px solid #e0e0e0;
+    }
+    
+    /* Responsive columns */
+    @media (max-width: 768px) {
+        .responsive-columns {
+            flex-direction: column;
+        }
     }
 </style>
 """, unsafe_allow_html=True)
 
 # App Header
-st.markdown('<div class="header">🛍️ Serviceability Dashboard</div>', unsafe_allow_html=True)
-st.markdown("Select a city to view its serviceability details across different retail channels.")
+st.markdown('<div class="header">📊 Retail Serviceability Dashboard</div>', unsafe_allow_html=True)
 
 # City Selection
 with st.container():
-    st.markdown('<div class="select-box">', unsafe_allow_html=True)
+    st.markdown('<div class="city-selector">', unsafe_allow_html=True)
     selected_city = st.selectbox(
-        "Select a City:", 
+        "SELECT CITY", 
         df["City"].unique(),
+        index=0,
         key="city_select"
     )
     st.markdown('</div>', unsafe_allow_html=True)
@@ -108,29 +159,28 @@ with st.container():
 # Filter data for selected city
 result = df[df["City"] == selected_city].reset_index(drop=True)
 
-# Basic Info Cards
-st.markdown('<div class="subheader">Basic Information</div>', unsafe_allow_html=True)
+# Basic Info Section
+st.markdown("### Basic Information")
 col1, col2 = st.columns(2)
 
 with col1:
-    st.markdown("""
-    <div class="metric-card">
+    st.markdown(f"""
+    <div class="info-card">
         <div class="card-title">Cluster</div>
-        <div class="card-value">{}</div>
+        <div class="card-value">{result["Cluster"][0]}</div>
     </div>
-    """.format(result["Cluster"][0]), unsafe_allow_html=True)
+    """, unsafe_allow_html=True)
 
 with col2:
-    st.markdown("""
-    <div class="metric-card">
+    st.markdown(f"""
+    <div class="info-card">
         <div class="card-title">CG Head</div>
-        <div class="card-value">{}</div>
+        <div class="card-value">{result["CG head"][0]}</div>
     </div>
-    """.format(result["CG head"][0]), unsafe_allow_html=True)
+    """, unsafe_allow_html=True)
 
 # Serviceability Section
-st.markdown('<div class="subheader">Serviceability Details</div>', unsafe_allow_html=True)
-
+st.markdown("### Serviceability Overview")
 service_cols = df.columns[3:]  # All columns after CG head
 
 # Split into two columns for better layout
@@ -141,29 +191,19 @@ for i, col in enumerate(service_cols):
     
     with target_col:
         status = result[col][0]
-        if status == "YES":
-            st.markdown(f"""
-            <div class="service-item">
-                <div style="display: flex; justify-content: space-between; align-items: center;">
-                    <span>{col}</span>
-                    <span class="yes-service">✓ Available</span>
-                </div>
-            </div>
-            """, unsafe_allow_html=True)
-        else:
-            st.markdown(f"""
-            <div class="service-item">
-                <div style="display: flex; justify-content: space-between; align-items: center;">
-                    <span>{col}</span>
-                    <span class="no-service">✗ Not Available</span>
-                </div>
-            </div>
-            """, unsafe_allow_html=True)
+        status_class = "available" if status == "YES" else "not-available"
+        status_text = "Available" if status == "YES" else "Not Available"
+        
+        st.markdown(f"""
+        <div class="service-item">
+            <span class="service-name">{col}</span>
+            <span class="service-status {status_class}">{status_text}</span>
+        </div>
+        """, unsafe_allow_html=True)
 
 # Footer
-st.markdown("---")
 st.markdown("""
-<div style="text-align: center; color: #7f8c8d; font-size: 14px;">
-    Serviceability Dashboard • Last updated: {date}
+<div class="footer">
+    Retail Serviceability Dashboard • Last updated: {date}
 </div>
 """.format(date=pd.Timestamp.now().strftime("%B %d, %Y")), unsafe_allow_html=True)
