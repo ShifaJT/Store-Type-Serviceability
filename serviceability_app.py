@@ -3,23 +3,33 @@ import pandas as pd
 
 # Load full dataset
 data = {
-    "Cluster": ["Ahmedabad", "Bangalore", "Bangalore", "Bangalore", "Bangalore", "Bangalore", "Hyderabad", "Lucknow", "Lucknow", "Pune", "Ranchi", "Bhubaneswar", "Jamshedpur", "Bihar"],
-    "City": ["Ahmedabad", "Bengaluru", "Mandya", "Hosur", "Tumkur", "Mysore", "Hyderabad", "Kanpur", "Lucknow", "Pune", "Ranchi", "Bhubaneswar", "Jamshedpur", "Patna"],
-    "CG head": ["Dhwajal", "Sri Harsh", "No CG Head", "Sri Harsh", "Sri Harsh", "Sri Harsh", "Basha", "Arif", "Ravi Sharma", "Tejas", "Amit", "NithyaNanda", "Uday kumar Anand", "Abhishek Jha"],
-    "Kirana Store": ["YES"]*14,
-    "SUPERMARKET": ["YES"]*14,
-    "Large Wholesaler": ["YES"]*14,
-    "General Stores": ["YES"]*14,
-    "Big Condiments": ["NO"]*14,
-    "Restaurants": ["YES", "YES", "NO", "NO", "NO", "NO", "NO", "NO", "NO", "NO", "YES", "YES", "YES", "YES"],
-    "Medical": ["YES", "NO", "NO", "NO", "NO", "NO", "NO", "NO", "NO", "NO", "NO", "YES", "YES", "NO"],
-    "Bakery": ["YES", "NO", "NO", "NO", "NO", "NO", "YES", "NO", "NO", "NO", "YES", "YES", "YES", "YES"],
-    "Milk Parlors": ["YES", "YES", "NO", "NO", "NO", "NO", "NO", "NO", "NO", "NO", "NO", "YES", "YES", "NO"],
-    "Cosmetics": ["YES", "NO", "NO", "NO", "NO", "NO", "YES", "NO", "NO", "NO", "NO", "YES", "YES", "NO"],
-    "Juice Centers": ["NO"]*14,
-    "PG": ["NO", "YES", "YES", "YES", "YES", "YES", "YES", "NO", "NO", "NO", "NO", "NO", "NO", "NO"],
-    "Tea Stalls": ["NO"]*14
+    "Cluster": ["Ahmedabad", "Bangalore", "Bangalore", "Bangalore", "Bangalore", "Bangalore", "Hyderabad", "Lucknow", "Lucknow", "Pune", "Ranchi", "Bhubaneswar", "Jamshedpur", "Bihar", "Chennai"],
+    "City": ["Ahmedabad", "Bengaluru", "Mandya", "Hosur", "Tumkur", "Mysore", "Hyderabad", "Kanpur", "Lucknow", "Pune", "Ranchi", "Bhubaneswar", "Jamshedpur", "Patna", "Chennai"],
+    "CG head": ["Dhwajal", "Sri Harsh", "No CG Head", "Sri Harsh", "Sri Harsh", "Sri Harsh", "Basha", "Arif", "Ravi Sharma", "Tejas", "Amit", "NithyaNanda", "Uday kumar Anand", "Abhishek Jha", "No CG Head"],
+
+    "Kirana Store": ["YES"] * 15,
+    "SUPERMARKET": ["YES"] * 14 + ["NO"],
+    "Large Wholesaler": ["YES"] * 15,
+    "General Stores": ["YES"] * 15,
+    "Big Condiments": ["NO"] * 15,
+
+    "Restaurants": ["YES", "YES", "NO", "NO", "NO", "NO", "NO", "NO", "NO", "NO", "YES", "YES", "YES", "YES", "NO"],
+
+    "Medical": ["YES", "NO", "NO", "NO", "NO", "NO", "NO", "NO", "NO", "NO", "NO", "YES", "YES", "NO", "NO"],
+
+    "Bakery": ["YES", "NO", "NO", "NO", "NO", "NO", "YES", "NO", "NO", "NO", "YES", "YES", "YES", "YES", "NO"],
+
+    "Milk Parlors": ["YES", "YES", "NO", "NO", "NO", "NO", "NO", "NO", "NO", "NO", "NO", "YES", "YES", "NO", "NO"],
+
+    "Cosmetics": ["YES", "NO", "NO", "NO", "NO", "NO", "YES", "NO", "NO", "NO", "NO", "YES", "YES", "NO", "NO"],
+
+    "Juice Centers": ["NO"] * 15,
+
+    "PG": ["NO", "YES", "YES", "YES", "YES", "YES", "YES", "NO", "NO", "NO", "NO", "NO", "NO", "NO", "NO"],
+
+    "Tea Stalls": ["NO"] * 15
 }
+
 df = pd.DataFrame(data)
 
 # Configuration
@@ -38,7 +48,6 @@ st.markdown("""
         --danger: #ef4444;
     }
     
-    /* Dashboard header */
     .dashboard-title {
         font-size: 2rem;
         font-weight: 700;
@@ -46,7 +55,6 @@ st.markdown("""
         margin-bottom: 0.5rem;
     }
     
-    /* City display header */
     .city-header {
         background-color: #f0f9ff;
         border-left: 4px solid var(--primary);
@@ -55,7 +63,6 @@ st.markdown("""
         border-radius: 4px;
     }
     
-    /* Service cards - two line layout */
     .service-card {
         background: white;
         border-radius: 8px;
@@ -90,14 +97,12 @@ st.markdown("""
         color: #991b1b;
     }
     
-    /* Two column layout */
     .service-columns {
         display: grid;
         grid-template-columns: 1fr 1fr;
         gap: 15px;
     }
     
-    /* Darker text throughout */
     body, .stSelectbox > div > div {
         color: #1f2937 !important;
     }
@@ -110,7 +115,7 @@ st.markdown("Comprehensive channel availability across all operational cities")
 
 # City Selection
 selected_city = st.selectbox(
-    "SELECT CITY", 
+    "SELECT CITY",
     df["City"].unique(),
     index=0
 )
@@ -132,19 +137,23 @@ st.markdown("### City Overview")
 cols = st.columns(4)
 cols[0].metric("Cluster", city_data["Cluster"])
 cols[1].metric("CG Head", city_data["CG head"])
-cols[2].metric("Available Services", f"{sum(1 for x in city_data[3:] if x == 'YES')}/{len(df.columns[3:])}")
-cols[3].metric("Coverage", f"{sum(1 for x in city_data[3:] if x == 'YES')/len(df.columns[3:])*100:.0f}%")
+cols[2].metric(
+    "Available Services",
+    f"{sum(1 for x in city_data[3:] if x == 'YES')}/{len(df.columns[3:])}"
+)
+cols[3].metric(
+    "Coverage",
+    f"{sum(1 for x in city_data[3:] if x == 'YES') / len(df.columns[3:]) * 100:.0f}%"
+)
 
-# Serviceability Display - Two Columns
+# Serviceability Display
 st.markdown("### Service Channel Status")
 service_cols = df.columns[3:]
 
-# Split services into two groups
 split_index = len(service_cols) // 2
 group1 = service_cols[:split_index]
 group2 = service_cols[split_index:]
 
-# Create two columns
 col1, col2 = st.columns(2)
 
 with col1:
